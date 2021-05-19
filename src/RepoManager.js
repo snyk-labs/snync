@@ -10,6 +10,7 @@ class RepoManager {
   constructor({ directoryPath }) {
     this.directoryPath = directoryPath
     this.parser = new Parser()
+    this.cache = {}
   }
 
   getCommitsForFilepath({ filepath }) {
@@ -59,11 +60,17 @@ class RepoManager {
       currentIndexPosition = Math.floor((minIndex + maxIndex) / 2)
       currentCommit = commitsList[currentIndexPosition]
 
-      const commitObject = await git.readCommit({ fs, dir: this.directoryPath, oid: currentCommit })
+      const commitObject = await git.readCommit({
+        fs,
+        dir: this.directoryPath,
+        oid: currentCommit,
+        cache: this.cache
+      })
       const commitFileTree = await git.readTree({
         fs,
         dir: this.directoryPath,
-        oid: commitObject.oid
+        oid: commitObject.oid,
+        cache: this.cache
       })
 
       let packageManifestFile
@@ -72,7 +79,8 @@ class RepoManager {
           const packageManifestObject = await git.readBlob({
             fs,
             dir: this.directoryPath,
-            oid: fileTreeObject.oid
+            oid: fileTreeObject.oid,
+            cache: this.cache
           })
           packageManifestFile = Buffer.from(packageManifestObject.blob).toString('utf8')
           break
@@ -100,7 +108,12 @@ class RepoManager {
 
     // @TODO add debug for currentCommit as the commit that introduced the package
     currentCommit = commitsList[currentIndexPosition]
-    const commitObject = await git.readCommit({ fs, dir: this.directoryPath, oid: currentCommit })
+    const commitObject = await git.readCommit({
+      fs,
+      dir: this.directoryPath,
+      oid: currentCommit,
+      cache: this.cache
+    })
     return commitObject
   }
 }
