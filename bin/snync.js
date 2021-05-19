@@ -24,21 +24,13 @@ async function main() {
   }
 
   const registryClient = new RegistryClient()
-
+  const repoManager = new RepoManager({ directoryPath: projectPath })
   const parser = new Parser({
     directoryPath: projectPath,
     manifestType: 'npm'
   })
 
   const allDependencies = parser.getDependencies()
-
-  const repoManager = new RepoManager({
-    directoryPath: projectPath
-  })
-  const commitsList = repoManager.getCommitsForFilepath({
-    filepath: 'package.json'
-  })
-
   const { nonScopedDependencies } = parser.classifyScopedDependencies(allDependencies)
   // @TODO warn the user about `scopedDeps` and `scopedDependencies` to make sure they own it
 
@@ -46,14 +38,21 @@ async function main() {
   console.log('Reviewing your dependencies...')
   console.log()
 
+  let snapshots = repoManager.getFileSnapshots({ filepath: 'package.json' })
+
+  snapshots = parser.parseSnapshots({ snapshots })
+  // Order snapshots from oldest to newest
+  snapshots = snapshots.reverse()
+
   for (const dependency of nonScopedDependencies) {
     console.log(`Checking dependency: ${dependency}`)
 
-    const commitObject = await repoManager.findFirstCommitIntroducingPackage(
-      commitsList,
-      dependency
-    )
-    const timestampInSource = repoManager.getTimestampFromCommit({ commitObject })
+    const oldestSnapshot = snapshots.find(snapshot => {
+      return parser.isPackageInDeps({
+        packageManifest: snapshot.content,
+        packageName: dependency
+      })
+    })
 
     const packageMetadataFromRegistry = await registryClient.getPackageMetadataFromRegistry({
       packageName: dependency
@@ -72,7 +71,7 @@ async function main() {
     // console.log('package in registry:     ', timestampOfPackageInRegistry)
 
     const status = resolveDependencyConfusionStatus({
-      timestampInSource,
+      timestampInSource: oldestSnapshot.ts,
       timestampOfPackageInRegistry
     })
     if (status) {
