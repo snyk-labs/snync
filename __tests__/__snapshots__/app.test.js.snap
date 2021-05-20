@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`integration test 1`] = `
+"
+Reviewing your dependencies...
+
+Checking dependency: asunc
+  ->  ❌ suspicious
+Checking dependency: a-package-in-private-registry-0
+  ->  ⚠️ vulnerable
+Checking dependency: lodash
+"
+`;

@@ -3,10 +3,7 @@
 
 const path = require('path')
 const { argv } = require('process')
-
-const RepoManager = require('../src/RepoManager')
-const Parser = require('../src/Parser')
-const RegistryClient = require('../src/RegistryClient')
+const { testProject } = require('../src')
 
 main()
 
@@ -23,78 +20,5 @@ async function main() {
     process.exit(-1)
   }
 
-  const registryClient = new RegistryClient()
-  const repoManager = new RepoManager({ directoryPath: projectPath })
-  const parser = new Parser({
-    directoryPath: projectPath,
-    manifestType: 'npm'
-  })
-
-  const allDependencies = parser.getDependencies()
-  const { nonScopedDependencies } = parser.classifyScopedDependencies(allDependencies)
-  // @TODO warn the user about `scopedDeps` and `scopedDependencies` to make sure they own it
-
-  console.log()
-  console.log('Reviewing your dependencies...')
-  console.log()
-
-  let snapshots = repoManager.getFileSnapshots({ filepath: 'package.json' })
-
-  snapshots = parser.parseSnapshots({ snapshots })
-  // Order snapshots from oldest to newest
-  snapshots = snapshots.reverse()
-
-  for (const dependency of nonScopedDependencies) {
-    console.log(`Checking dependency: ${dependency}`)
-
-    const oldestSnapshot = snapshots.find(snapshot => {
-      return parser.isPackageInDeps({
-        packageManifest: snapshot.content,
-        packageName: dependency
-      })
-    })
-
-    const packageMetadataFromRegistry = await registryClient.getPackageMetadataFromRegistry({
-      packageName: dependency
-    })
-
-    let timestampOfPackageInRegistry
-    if (packageMetadataFromRegistry && packageMetadataFromRegistry.error === 'Not found') {
-      timestampOfPackageInRegistry = null
-    } else {
-      // npmjs keeps time.created always in UTC, it's a ISO 8601 time format string
-      timestampOfPackageInRegistry = new Date(packageMetadataFromRegistry.time.created).getTime()
-    }
-
-    // @TODO add debug for:
-    // console.log('package in source UTC:   ', timestampInSource)
-    // console.log('package in registry:     ', timestampOfPackageInRegistry)
-
-    const status = resolveDependencyConfusionStatus({
-      timestampInSource: oldestSnapshot.ts,
-      timestampOfPackageInRegistry
-    })
-    if (status) {
-      console.log('  -> ', status)
-    }
-  }
-}
-
-function resolveDependencyConfusionStatus({ timestampInSource, timestampOfPackageInRegistry }) {
-  let status = null
-
-  // if timestampOfPackageInRegistry exists and has
-  // numeric values then the package exists in the registry
-  if (timestampOfPackageInRegistry > 0) {
-    const timeDiff = timestampInSource - timestampOfPackageInRegistry
-    if (timeDiff < 0) {
-      // this means that the package was first introduced to source code
-      // and now there's also a package of this name in a public registry
-      status = '❌ suspicious'
-    }
-  } else {
-    status = '⚠️ vulnerable'
-  }
-
-  return status
+  await testProject(projectPath, console.log)
 }
