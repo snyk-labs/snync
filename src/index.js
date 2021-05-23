@@ -21,7 +21,7 @@ async function testProject(projectPath, log) {
   log()
 
   const snapshots = repoManager.getFileSnapshots({ filepath: 'package.json' })
-  const dependenciesDates = parser.getDependenciesAddedDate({ snapshots })
+  const earliestSnapshotPerDependency = parser.getEarliestSnapshotPerDependency({ snapshots })
 
   // Make all requests in parallel and await later when it needed
   const packagesMetadataRequests = nonScopedDependencies.reduce((acc, dependency) => {
@@ -35,7 +35,7 @@ async function testProject(projectPath, log) {
     log(`Checking dependency: ${dependency}`)
 
     const packageMetadataFromRegistry = await packagesMetadataRequests[dependency]
-    const timestampOfPackageInSource = dependenciesDates[dependency]
+    const timestampOfPackageInSource = earliestSnapshotPerDependency[dependency].ts
 
     let timestampOfPackageInRegistry
     if (packageMetadataFromRegistry && packageMetadataFromRegistry.error === 'Not found') {

@@ -9,7 +9,7 @@ class Parser {
     this.manifestType = manifestType
   }
 
-  getDependenciesAddedDate({ snapshots }) {
+  getEarliestSnapshotPerDependency({ snapshots }) {
     const result = {}
 
     if (this.manifestType === 'npm') {
@@ -27,10 +27,7 @@ class Parser {
 
         for (const dependency of dependencies) {
           if (!result[dependency]) {
-            result[dependency] = {
-              ts: snapshot.ts,
-              hash: snapshot.hash
-            }
+            result[dependency] = snapshot
           }
         }
       }
