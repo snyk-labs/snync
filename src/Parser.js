@@ -9,41 +9,55 @@ class Parser {
     this.manifestType = manifestType
   }
 
-  parseSnapshots({ snapshots }) {
+  getEarliestSnapshotPerDependency({ snapshots }) {
+    const result = {}
+
     if (this.manifestType === 'npm') {
-      return snapshots.map(snapshot => {
-        snapshot.content = JSON.parse(snapshot.content)
-        return snapshot
-      })
+      for (const snapshot of snapshots) {
+        let manifest
+
+        try {
+          manifest = JSON.parse(snapshot.content)
+        } catch (_) {
+          // Skip broken snapshots
+          continue
+        }
+
+        const dependencies = this.getDependencies({ manifest })
+
+        for (const dependency of dependencies) {
+          if (!result[dependency]) {
+            result[dependency] = snapshot
+          }
+        }
+      }
     }
+
+    return result
   }
 
-  getDependencies() {
-    if (this.manifestType === 'npm') {
-      const projectManifest = require(path.resolve(path.join(this.directoryPath, 'package.json')))
+  getDependenciesFromManifest() {
+    let projectManifest
 
+    if (this.manifestType === 'npm') {
+      projectManifest = require(path.resolve(path.join(this.directoryPath, 'package.json')))
+    }
+
+    return this.getDependencies({ manifest: projectManifest })
+  }
+
+  getDependencies({ manifest }) {
+    let allDependencies
+
+    if (this.manifestType === 'npm') {
       // @TODO need to also add here other sources for deps like peerDeps, etc
-      const prodDependencies = Object.keys(projectManifest.dependencies || {})
-      const devDependencies = Object.keys(projectManifest.devDependencies || {})
+      const prodDependencies = Object.keys(manifest.dependencies || {})
+      const devDependencies = Object.keys(manifest.devDependencies || {})
 
-      const allDependencies = [].concat(prodDependencies, devDependencies)
-      return allDependencies
+      allDependencies = [].concat(prodDependencies, devDependencies)
     }
 
-    return []
-  }
-
-  // @TODO need to also add here other sources for deps like peerDeps, etc
-  isPackageInDeps({ packageManifest, packageName }) {
-    if ((packageManifest.dependencies || {})[packageName]) {
-      return true
-    }
-
-    if ((packageManifest.devDependencies || {})[packageName]) {
-      return true
-    }
-
-    return false
+    return allDependencies
   }
 
   classifyScopedDependencies(dependencies) {
@@ -68,21 +82,6 @@ class Parser {
       scopedDependencies,
       nonScopedDependencies
     }
-  }
-
-  flattenDepTree(depTree) {
-    const depList = []
-    const _flattenDepTree = depTree => {
-      for (const [depName, depObject] of Object.entries(depTree)) {
-        depList.push(depName)
-        if (depObject.dependencies) {
-          _flattenDepTree(depObject.dependencies)
-        }
-      }
-    }
-
-    _flattenDepTree(depTree.dependencies)
-    return depList
   }
 }
 
