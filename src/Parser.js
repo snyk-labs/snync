@@ -13,7 +13,7 @@ class Parser {
     const result = {}
 
     if (this.manifestType === 'npm') {
-      for (let snapshot of snapshots) {
+      for (const snapshot of snapshots) {
         let manifest
 
         try {
@@ -25,9 +25,12 @@ class Parser {
 
         const dependencies = this.getDependencies({ manifest })
 
-        for (let dependency of dependencies) {
+        for (const dependency of dependencies) {
           if (!result[dependency]) {
-            result[dependency] = snapshot.ts
+            result[dependency] = {
+              ts: snapshot.ts,
+              hash: snapshot.hash
+            }
           }
         }
       }
@@ -47,29 +50,17 @@ class Parser {
   }
 
   getDependencies({ manifest }) {
+    let allDependencies
+
     if (this.manifestType === 'npm') {
       // @TODO need to also add here other sources for deps like peerDeps, etc
       const prodDependencies = Object.keys(manifest.dependencies || {})
       const devDependencies = Object.keys(manifest.devDependencies || {})
 
-      const allDependencies = [].concat(prodDependencies, devDependencies)
-      return allDependencies
+      allDependencies = [].concat(prodDependencies, devDependencies)
     }
 
-    return []
-  }
-
-  // @TODO need to also add here other sources for deps like peerDeps, etc
-  isPackageInDeps({ packageManifest, packageName }) {
-    if ((packageManifest.dependencies || {})[packageName]) {
-      return true
-    }
-
-    if ((packageManifest.devDependencies || {})[packageName]) {
-      return true
-    }
-
-    return false
+    return allDependencies
   }
 
   classifyScopedDependencies(dependencies) {
@@ -94,21 +85,6 @@ class Parser {
       scopedDependencies,
       nonScopedDependencies
     }
-  }
-
-  flattenDepTree(depTree) {
-    const depList = []
-    const _flattenDepTree = depTree => {
-      for (const [depName, depObject] of Object.entries(depTree)) {
-        depList.push(depName)
-        if (depObject.dependencies) {
-          _flattenDepTree(depObject.dependencies)
-        }
-      }
-    }
-
-    _flattenDepTree(depTree.dependencies)
-    return depList
   }
 }
 
