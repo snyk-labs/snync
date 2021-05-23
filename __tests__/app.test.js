@@ -4,9 +4,9 @@ const { testProject } = require('../src')
 
 const decompress = require('decompress')
 
-let projectFixtures = ['simple-project.zip']
+const projectFixtures = ['simple-project.zip']
 
-let destinationFixtures = path.resolve(path.join(__dirname, '__fixtures__', 'tmp'))
+const destinationFixtures = path.resolve(path.join(__dirname, '__fixtures__', 'tmp'))
 
 beforeAll(async () => {
   if (!fs.existsSync(destinationFixtures)) {
@@ -22,8 +22,6 @@ beforeAll(async () => {
       await decompress(fixtureProjectPath, destinationFixtures)
     }
   }
-
-  return
 })
 
 test('integration test', async () => {
