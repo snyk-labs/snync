@@ -57,6 +57,7 @@
     "babel-plugin-syntax-async-functions": "^6.13.0",
     "babel-plugin-transform-regenerator": "^6.26.0",
     "babel-preset-env": "^1.6.1",
+    "decompress": "^4.2.1",
     "eslint": "^6.0.1",
     "eslint-config-standard": "^13.0.1",
     "eslint-plugin-import": "^2.18.0",
@@ -70,8 +71,7 @@
     "lint-staged": "^9.2.0",
     "lockfile-lint": "^2.0.1",
     "open-cli": "^6.0.0",
-    "prettier": "^1.18.2",
-    "rimraf": "^3.0.2"
+    "prettier": "^1.18.2"
   },
   "jest": {
     "testEnvironment": "node",
@@ -152,7 +152,7 @@
       "jest/no-identical-title": "error",
       "node/no-unsupported-features": "off",
       "node/no-unpublished-require": "off",
-      "security/detect-non-literal-fs-filename": "error",
+      "security/detect-non-literal-fs-filename": "off",
       "security/detect-unsafe-regex": "error",
       "security/detect-buffer-noassert": "error",
       "security/detect-child-process": "off",
