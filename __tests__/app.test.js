@@ -1,25 +1,35 @@
 const fs = require('fs')
 const path = require('path')
-const os = require('os')
-const childProcess = require('child_process')
-const rimraf = require('rimraf')
 const { testProject } = require('../src')
 
-let tmpDir
+const decompress = require('decompress')
 
-beforeAll(() => {
-  tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'snync-'))
-  childProcess.spawnSync('git', ['clone', 'git@github.com:snyk-labs/snync-fixtures.git'], {
-    cwd: tmpDir
-  })
-})
+let projectFixtures = ['simple-project.zip']
 
-afterAll(() => {
-  rimraf.sync(tmpDir)
+let destinationFixtures = path.resolve(path.join(__dirname, '__fixtures__', 'tmp'))
+
+beforeAll(async () => {
+  if (!fs.existsSync(destinationFixtures)) {
+    fs.mkdirSync(destinationFixtures)
+  }
+
+  for (const fixtureName of projectFixtures) {
+    const fixtureProjectPath = path.resolve(path.join(__dirname, '__fixtures__', fixtureName))
+    const fixtureDirectoryName = path.basename(fixtureName, '.zip')
+    if (fs.existsSync(path.resolve(path.join(destinationFixtures, fixtureDirectoryName)))) {
+      continue
+    } else {
+      await decompress(fixtureProjectPath, destinationFixtures)
+    }
+  }
+
+  return
 })
 
 test('integration test', async () => {
+  const projectPath = path.resolve(path.join(destinationFixtures, 'simple-project'))
+
   let out = ''
-  await testProject(`${tmpDir}/snync-fixtures`, (...args) => (out += `${args.join(' ')}\n`))
+  await testProject(projectPath, (...args) => (out += `${args.join(' ')}\n`))
   expect(out).toMatchSnapshot()
 })
