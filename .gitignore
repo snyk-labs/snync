@@ -1,6 +1,9 @@
 # ignore the extracted fixtures directory
 __tests__/__fixtures__/tmp
 
+# ignore dccache
+.dccache
+
 # Logs
 logs
 *.log
