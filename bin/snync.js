@@ -20,5 +20,5 @@ async function main() {
     process.exit(-1)
   }
 
-  await testProject(projectPath, console.log)
+  await testProject({ projectPath, log: console.log })
 }

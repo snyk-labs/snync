@@ -3,8 +3,9 @@
 const RepoManager = require('../src/RepoManager')
 const Parser = require('../src/Parser')
 const RegistryClient = require('../src/RegistryClient')
+const debug = require('debug')('snync')
 
-async function testProject(projectPath, log) {
+async function testProject({ projectPath, log }) {
   const registryClient = new RegistryClient()
   const repoManager = new RepoManager({ directoryPath: projectPath })
   const parser = new Parser({
@@ -53,9 +54,12 @@ async function testProject(projectPath, log) {
       timestampOfPackageInSource,
       timestampOfPackageInRegistry
     })
+
     if (status) {
       log('  -> ', status)
     }
+
+    debug('introduced via commit sha: ', earliestSnapshotPerDependency[dependency].hash)
   }
 }
 

@@ -28,6 +28,6 @@ test('integration test', async () => {
   const projectPath = path.resolve(path.join(destinationFixtures, 'simple-project'))
 
   let out = ''
-  await testProject(projectPath, (...args) => (out += `${args.join(' ')}\n`))
+  await testProject({ projectPath, log: (...args) => (out += `${args.join(' ')}\n`) })
   expect(out).toMatchSnapshot()
 })
