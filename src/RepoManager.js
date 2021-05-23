@@ -15,18 +15,24 @@ class RepoManager {
     )
     const commitsString = Buffer.from(stdout).toString('utf8')
 
-    return commitsString.split('\n').map(line => {
-      const [unixTs, hash] = line.split(' ')
+    return (
+      commitsString
+        .split('\n')
+        .map(line => {
+          const [unixTs, hash] = line.split(' ')
 
-      return {
-        ts: unixTs * 1000,
-        hash,
-        content: this.getFileForCommit({
-          hash,
-          filepath
+          return {
+            ts: unixTs * 1000,
+            hash,
+            content: this.getFileForCommit({
+              hash,
+              filepath
+            })
+          }
         })
-      }
-    })
+        // Order snapshots from oldest to newest
+        .reverse()
+    )
   }
 
   getFileForCommit({ hash, filepath }) {

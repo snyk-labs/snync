@@ -12,7 +12,7 @@ async function testProject(projectPath, log) {
     manifestType: 'npm'
   })
 
-  const allDependencies = parser.getDependencies()
+  const allDependencies = parser.getDependenciesFromManifest()
   const { nonScopedDependencies } = parser.classifyScopedDependencies(allDependencies)
   // @TODO warn the user about `scopedDeps` and `scopedDependencies` to make sure they own it
 
@@ -20,25 +20,22 @@ async function testProject(projectPath, log) {
   log('Reviewing your dependencies...')
   log()
 
-  let snapshots = repoManager.getFileSnapshots({ filepath: 'package.json' })
+  const snapshots = repoManager.getFileSnapshots({ filepath: 'package.json' })
+  const dependenciesDates = parser.getDependenciesAddedDate({ snapshots })
 
-  snapshots = parser.parseSnapshots({ snapshots })
-  // Order snapshots from oldest to newest
-  snapshots = snapshots.reverse()
+  // Make all requests in parallel and await later when it needed
+  const packagesMetadataRequests = nonScopedDependencies.reduce((acc, dependency) => {
+    acc[dependency] = registryClient.getPackageMetadataFromRegistry({
+      packageName: dependency
+    })
+    return acc
+  }, {})
 
   for (const dependency of nonScopedDependencies) {
     log(`Checking dependency: ${dependency}`)
 
-    const oldestSnapshot = snapshots.find(snapshot => {
-      return parser.isPackageInDeps({
-        packageManifest: snapshot.content,
-        packageName: dependency
-      })
-    })
-
-    const packageMetadataFromRegistry = await registryClient.getPackageMetadataFromRegistry({
-      packageName: dependency
-    })
+    const packageMetadataFromRegistry = await packagesMetadataRequests[dependency]
+    const timestampOfPackageInSource = dependenciesDates[dependency]
 
     let timestampOfPackageInRegistry
     if (packageMetadataFromRegistry && packageMetadataFromRegistry.error === 'Not found') {
@@ -53,7 +50,7 @@ async function testProject(projectPath, log) {
     // console.log('package in registry:     ', timestampOfPackageInRegistry)
 
     const status = resolveDependencyConfusionStatus({
-      timestampInSource: oldestSnapshot.ts,
+      timestampOfPackageInSource,
       timestampOfPackageInRegistry
     })
     if (status) {
@@ -62,13 +59,16 @@ async function testProject(projectPath, log) {
   }
 }
 
-function resolveDependencyConfusionStatus({ timestampInSource, timestampOfPackageInRegistry }) {
+function resolveDependencyConfusionStatus({
+  timestampOfPackageInSource,
+  timestampOfPackageInRegistry
+}) {
   let status = null
 
   // if timestampOfPackageInRegistry exists and has
   // numeric values then the package exists in the registry
   if (timestampOfPackageInRegistry > 0) {
-    const timeDiff = timestampInSource - timestampOfPackageInRegistry
+    const timeDiff = timestampOfPackageInSource - timestampOfPackageInRegistry
     if (timeDiff < 0) {
       // this means that the package was first introduced to source code
       // and now there's also a package of this name in a public registry
