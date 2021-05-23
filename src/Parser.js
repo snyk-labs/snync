@@ -23,8 +23,8 @@ class Parser {
       const projectManifest = require(path.resolve(path.join(this.directoryPath, 'package.json')))
 
       // @TODO need to also add here other sources for deps like peerDeps, etc
-      const prodDependencies = Object.keys(projectManifest.dependencies)
-      const devDependencies = Object.keys(projectManifest.devDependencies)
+      const prodDependencies = Object.keys(projectManifest.dependencies || {})
+      const devDependencies = Object.keys(projectManifest.devDependencies || {})
 
       const allDependencies = [].concat(prodDependencies, devDependencies)
       return allDependencies
@@ -35,11 +35,11 @@ class Parser {
 
   // @TODO need to also add here other sources for deps like peerDeps, etc
   isPackageInDeps({ packageManifest, packageName }) {
-    if (packageManifest.dependencies[packageName]) {
+    if ((packageManifest.dependencies || {})[packageName]) {
       return true
     }
 
-    if (packageManifest.devDependencies[packageName]) {
+    if ((packageManifest.devDependencies || {})[packageName]) {
       return true
     }
 
