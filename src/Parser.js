@@ -9,6 +9,15 @@ class Parser {
     this.manifestType = manifestType
   }
 
+  parseSnapshots({ snapshots }) {
+    if (this.manifestType === 'npm') {
+      return snapshots.map(snapshot => {
+        snapshot.content = JSON.parse(snapshot.content)
+        return snapshot
+      })
+    }
+  }
+
   getDependencies() {
     if (this.manifestType === 'npm') {
       const projectManifest = require(path.resolve(path.join(this.directoryPath, 'package.json')))
