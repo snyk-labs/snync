@@ -4,7 +4,7 @@ const { testProject } = require('../src')
 
 const decompress = require('decompress')
 
-const projectFixtures = ['simple-project.zip']
+const projectFixtures = ['simple-project.zip', 'small-project.zip']
 
 const destinationFixtures = path.resolve(path.join(__dirname, '__fixtures__', 'tmp'))
 
@@ -24,11 +24,23 @@ beforeAll(async () => {
   }
 })
 
-test('Sanity test', async () => {
+test('Sanity test - simple project', async () => {
   const projectPath = path.resolve(path.join(destinationFixtures, 'simple-project'))
 
   let out = ''
   await testProject({ projectPath, log: (...args) => (out += `${args.join(' ')}\n`) })
+  expect(out).toMatchSnapshot()
+})
+
+test('Sanity test - small project', async () => {
+  const projectPath = path.resolve(path.join(destinationFixtures, 'small-project'))
+
+  let out = ''
+  await testProject({
+    projectPath,
+    log: (...args) => (out += `${args.join(' ')}\n`),
+    debugMode: true
+  })
   expect(out).toMatchSnapshot()
 })
 
