@@ -1,6 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`integration test 1`] = `
+exports[`Debug information prints commit SHA 1`] = `
+"
+Reviewing your dependencies...
+
+Checking dependency: asunc
+  ->  ❌ suspicious
+  -> introduced via commit sha:  b335c1d5b4089833d63c95e846fb1916e6425447
+Checking dependency: a-package-in-private-registry-0
+  ->  ⚠️ vulnerable
+  -> introduced via commit sha:  07b2f1c6a5bde9d73e056d67d51ea9bbc7be6ee7
+Checking dependency: lodash
+  -> introduced via commit sha:  74f0d1666052fd03fc1220351ee087545dba2ec0
+"
+`;
+
+exports[`Sanity test 1`] = `
 "
 Reviewing your dependencies...
 

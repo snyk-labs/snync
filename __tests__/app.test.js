@@ -24,10 +24,22 @@ beforeAll(async () => {
   }
 })
 
-test('integration test', async () => {
+test('Sanity test', async () => {
   const projectPath = path.resolve(path.join(destinationFixtures, 'simple-project'))
 
   let out = ''
-  await testProject(projectPath, (...args) => (out += `${args.join(' ')}\n`))
+  await testProject({ projectPath, log: (...args) => (out += `${args.join(' ')}\n`) })
+  expect(out).toMatchSnapshot()
+})
+
+test('Debug information prints commit SHA', async () => {
+  const projectPath = path.resolve(path.join(destinationFixtures, 'simple-project'))
+
+  let out = ''
+  await testProject({
+    projectPath,
+    log: (...args) => (out += `${args.join(' ')}\n`),
+    debugMode: true
+  })
   expect(out).toMatchSnapshot()
 })
