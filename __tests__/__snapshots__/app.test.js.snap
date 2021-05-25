@@ -15,7 +15,7 @@ Checking dependency: lodash
 "
 `;
 
-exports[`Sanity test 1`] = `
+exports[`Sanity test - simple project 1`] = `
 "
 Reviewing your dependencies...
 
@@ -24,5 +24,57 @@ Checking dependency: asunc
 Checking dependency: a-package-in-private-registry-0
   ->  ⚠️ vulnerable
 Checking dependency: lodash
+"
+`;
+
+exports[`Sanity test - small project 1`] = `
+"
+Reviewing your dependencies...
+
+Checking dependency: isomorphic-textencoder
+  -> introduced via commit sha:  55c258ce353630cd7ccc0ce999d941311f8c4655
+Checking dependency: just-debounce-it
+  -> introduced via commit sha:  55c258ce353630cd7ccc0ce999d941311f8c4655
+Checking dependency: just-once
+  -> introduced via commit sha:  55c258ce353630cd7ccc0ce999d941311f8c4655
+Checking dependency: very-private-package-of-mine
+  ->  ⚠️ vulnerable
+  -> introduced via commit sha:  ab259e06ddc4bdacaf459c8df98c65ca34c93ecc
+Checking dependency: karma
+  -> introduced via commit sha:  55c258ce353630cd7ccc0ce999d941311f8c4655
+Checking dependency: karma-browserstack-launcher
+  -> introduced via commit sha:  ac659289d1e3f9eb1e81db4f5ea821fe688b6bbd
+Checking dependency: karma-chrome-launcher
+  -> introduced via commit sha:  55c258ce353630cd7ccc0ce999d941311f8c4655
+Checking dependency: karma-edge-launcher
+  -> introduced via commit sha:  55c258ce353630cd7ccc0ce999d941311f8c4655
+Checking dependency: karma-fail-fast-reporter
+  -> introduced via commit sha:  ac659289d1e3f9eb1e81db4f5ea821fe688b6bbd
+Checking dependency: karma-firefox-launcher
+  -> introduced via commit sha:  55c258ce353630cd7ccc0ce999d941311f8c4655
+Checking dependency: karma-ie-launcher
+  -> introduced via commit sha:  ac659289d1e3f9eb1e81db4f5ea821fe688b6bbd
+Checking dependency: karma-jasmine
+  -> introduced via commit sha:  55c258ce353630cd7ccc0ce999d941311f8c4655
+Checking dependency: karma-junit-reporter
+  -> introduced via commit sha:  55c258ce353630cd7ccc0ce999d941311f8c4655
+Checking dependency: karma-safari-launcher
+  -> introduced via commit sha:  55c258ce353630cd7ccc0ce999d941311f8c4655
+Checking dependency: karma-sauce-launcher
+  -> introduced via commit sha:  55c258ce353630cd7ccc0ce999d941311f8c4655
+Checking dependency: karma-verbose-reporter
+  -> introduced via commit sha:  55c258ce353630cd7ccc0ce999d941311f8c4655
+Checking dependency: karma-webpack
+  -> introduced via commit sha:  55c258ce353630cd7ccc0ce999d941311f8c4655
+Checking dependency: prettier
+  -> introduced via commit sha:  55c258ce353630cd7ccc0ce999d941311f8c4655
+Checking dependency: puppeteer
+  -> introduced via commit sha:  55c258ce353630cd7ccc0ce999d941311f8c4655
+Checking dependency: semantic-release
+  -> introduced via commit sha:  f083b9680cc3f588c8d24a4c212064372d04de2e
+Checking dependency: webpack
+  -> introduced via commit sha:  55c258ce353630cd7ccc0ce999d941311f8c4655
+Checking dependency: webpack-cli
+  -> introduced via commit sha:  61c5d8034927693cc72064c44b8a7f3f63b3ea50
 "
 `;
