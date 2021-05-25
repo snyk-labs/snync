@@ -1,5 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Commit with broken manifest should be ignored 1`] = `
+"
+Reviewing your dependencies...
+
+Checking dependency: lodash
+  -> introduced via commit sha:  cba680064122389350203e90b2cbc8705de23b63
+Checking dependency: async
+  -> introduced via commit sha:  456e6f36b5494ff6c2437347ac3ec220248e09c8
+"
+`;
+
 exports[`Debug information prints commit SHA 1`] = `
 "
 Reviewing your dependencies...

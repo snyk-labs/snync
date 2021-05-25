@@ -4,7 +4,13 @@ const { testProject } = require('../src')
 
 const decompress = require('decompress')
 
-const projectFixtures = ['simple-project.zip', 'small-project.zip']
+jest.setTimeout(30000)
+
+const projectFixtures = [
+  'simple-project.zip',
+  'small-project.zip',
+  'commit-with-broken-package-json.zip'
+]
 
 const destinationFixtures = path.resolve(path.join(__dirname, '__fixtures__', 'tmp'))
 
@@ -46,6 +52,26 @@ test('Sanity test - small project', async () => {
 
 test('Debug information prints commit SHA', async () => {
   const projectPath = path.resolve(path.join(destinationFixtures, 'simple-project'))
+
+  let out = ''
+  await testProject({
+    projectPath,
+    log: (...args) => (out += `${args.join(' ')}\n`),
+    debugMode: true
+  })
+  expect(out).toMatchSnapshot()
+})
+
+// Check the case when commit contains invalid package.json file,
+// for example with extra comma.
+// commit 456e6f36b5494ff6c2437347ac3ec220248e09c8 fix previous commit
+// commit 6b2a52e3177c8b1fad572b10d3090d1e9822945f add async
+//     --> This commit introduces extra comma after the last dependency
+// commit cba680064122389350203e90b2cbc8705de23b63 add lodash
+test('Commit with broken manifest should be ignored', async () => {
+  const projectPath = path.resolve(
+    path.join(destinationFixtures, 'commit-with-broken-package-json')
+  )
 
   let out = ''
   await testProject({
