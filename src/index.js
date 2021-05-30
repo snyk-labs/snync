@@ -36,7 +36,9 @@ async function testProject({ projectPath, log, debugMode }) {
     log(`Checking dependency: ${dependency}`)
 
     const packageMetadataFromRegistry = await packagesMetadataRequests[dependency]
-    const timestampOfPackageInSource = earliestSnapshotPerDependency[dependency].ts
+    const timestampOfPackageInSource = earliestSnapshotPerDependency[dependency]
+      ? earliestSnapshotPerDependency[dependency].ts
+      : Date.now() // If a dependency is not in the git history (just added in the working copy)
 
     let timestampOfPackageInRegistry
     if (packageMetadataFromRegistry && packageMetadataFromRegistry.error === 'Not found') {
@@ -59,7 +61,7 @@ async function testProject({ projectPath, log, debugMode }) {
       log('  -> ', status)
     }
 
-    if (debugMode) {
+    if (debugMode && earliestSnapshotPerDependency[dependency]) {
       log('  -> introduced via commit sha: ', earliestSnapshotPerDependency[dependency].hash)
     }
   }

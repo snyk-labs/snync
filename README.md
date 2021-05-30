@@ -50,7 +50,6 @@ We've seen cases of package hijacking and maintainer accounts compromises in pas
 
 When a pakcage is detected as **suspicious**, it is our recommendation to immediately move to a new package naming and reserve that new name on the public registry.
 
-
 ## Supported ecosystems
 
 | Ecosystem     | Supported 
@@ -77,3 +76,11 @@ To scan a project's dependencies and test if you're vulnerable to Dependency Con
 ```sh
 npx snync /home/user/my-app
 ```
+
+# Implementation details
+
+To get a list of dependencies we parse a project's manifest (`package.json`) from the root of the directory you specify as a first argument.
+
+Then we fetch from the public NPM registry to check when each dependency was created. At this point we can check if dependency is **vulnerable** – if it is not in the public NPM registry.
+
+To check if dependency is **suspicious** we compare date it was first introduced to a project's manifest and date it was published. To understand when you added a dependency to a manifest we scan git commits history. 
