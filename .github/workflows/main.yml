@@ -19,9 +19,8 @@ jobs:
         run: yarn install --frozen-lockfile
       - name: lint code
         run: npm run lint
-      # skip tests for now, because uhm... don't have them 🙊
-      # - name: run tests
-      #   run: npm run test
+      - name: run tests
+        run: npm run test
 
   release:
     name: do semantic release
