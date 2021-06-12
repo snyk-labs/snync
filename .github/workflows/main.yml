@@ -3,12 +3,25 @@ name: CI
 on: [push, pull_request]
 
 jobs:
+  lint:
+    name: Lint
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: install dependencies
+        run: yarn install --frozen-lockfile
+      - name: lint code
+        run: npm run lint
+
   build:
     strategy:
       matrix:
         platform: [ubuntu-latest]
         node: ['12', '14']
-    name: Node ${{ matrix.node }} (${{ matrix.platform }})
+    name: Tests - Node ${{ matrix.node }} (${{ matrix.platform }})
     runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v2
@@ -17,8 +30,6 @@ jobs:
           node-version: ${{ matrix.node }}
       - name: install dependencies
         run: yarn install --frozen-lockfile
-      - name: lint code
-        run: npm run lint
       - name: run tests
         run: npm run test
 
