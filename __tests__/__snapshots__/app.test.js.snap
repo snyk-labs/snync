@@ -91,3 +91,13 @@ Checking dependency: webpack-cli
   -> introduced via commit sha:  61c5d8034927693cc72064c44b8a7f3f63b3ea50
 "
 `;
+
+exports[`Test case of private package that exists already on npm 1`] = `
+"
+Reviewing your dependencies...
+
+Checking dependency: eslint-plugin-vue
+  ->  ❌ suspicious
+  -> introduced via commit sha:  9e9dab770d4e412babfce0f2dc66d8b04a6c0d28
+"
+`;

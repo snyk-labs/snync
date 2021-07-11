@@ -9,7 +9,8 @@ jest.setTimeout(30000)
 const projectFixtures = [
   'simple-project.zip',
   'small-project.zip',
-  'commit-with-broken-package-json.zip'
+  'commit-with-broken-package-json.zip',
+  'small-project-existing-package-name.zip'
 ]
 
 const destinationFixtures = path.resolve(path.join(__dirname, '__fixtures__', 'tmp'))
@@ -78,6 +79,21 @@ test('Commit with broken manifest should be ignored', async () => {
     projectPath,
     log: (...args) => (out += `${args.join(' ')}\n`),
     debugMode: true
+  })
+  expect(out).toMatchSnapshot()
+})
+
+test('Test case of private package that exists already on npm', async () => {
+  const projectPath = path.resolve(
+    path.join(destinationFixtures, 'simple-project-existing-package-name')
+  )
+
+  let out = ''
+  await testProject({
+    projectPath,
+    log: (...args) => (out += `${args.join(' ')}\n`),
+    debugMode: true,
+    privatePackagesList: ['eslint-plugin-vue']
   })
   expect(out).toMatchSnapshot()
 })
