@@ -23,7 +23,6 @@ Checking dependency: a-package-in-private-registry-0
   -> introduced via commit sha:  07b2f1c6a5bde9d73e056d67d51ea9bbc7be6ee7
 Checking dependency: lodash
   -> introduced via commit sha:  74f0d1666052fd03fc1220351ee087545dba2ec0
-Checking dependency: moment
 "
 `;
 
@@ -36,7 +35,6 @@ Checking dependency: asunc
 Checking dependency: a-package-in-private-registry-0
   ->  ⚠️ vulnerable
 Checking dependency: lodash
-Checking dependency: moment
 "
 `;
 
