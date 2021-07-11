@@ -81,3 +81,18 @@ test('Commit with broken manifest should be ignored', async () => {
   })
   expect(out).toMatchSnapshot()
 })
+
+test('Test case of private package that exists already on npm', async () => {
+  const projectPath = path.resolve(
+    path.join(destinationFixtures, 'simple-project-existing-package-name')
+  )
+
+  let out = ''
+  await testProject({
+    projectPath,
+    log: (...args) => (out += `${args.join(' ')}\n`),
+    debugMode: true,
+    privatePackagesList: ['eslint-plugin-vue']
+  })
+  expect(out).toMatchSnapshot()
+})

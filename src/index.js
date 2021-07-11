@@ -4,7 +4,7 @@ const RepoManager = require('../src/RepoManager')
 const Parser = require('../src/Parser')
 const RegistryClient = require('../src/RegistryClient')
 
-async function testProject({ projectPath, log, debugMode }) {
+async function testProject({ projectPath, log, debugMode, privatePackagesList = [] }) {
   const registryClient = new RegistryClient()
   const repoManager = new RepoManager({ directoryPath: projectPath })
 
@@ -48,11 +48,14 @@ async function testProject({ projectPath, log, debugMode }) {
       timestampOfPackageInRegistry = new Date(packageMetadataFromRegistry.time.created).getTime()
     }
 
+    let isPrivatePackage = privatePackagesList.includes(dependency)
+
     // @TODO add debug for:
     // console.log('package in source UTC:   ', timestampInSource)
     // console.log('package in registry:     ', timestampOfPackageInRegistry)
 
     const status = resolveDependencyConfusionStatus({
+      isPrivatePackage,
       timestampOfPackageInSource,
       timestampOfPackageInRegistry
     })
@@ -68,6 +71,7 @@ async function testProject({ projectPath, log, debugMode }) {
 }
 
 function resolveDependencyConfusionStatus({
+  isPrivatePackage,
   timestampOfPackageInSource,
   timestampOfPackageInRegistry
 }) {
@@ -81,6 +85,10 @@ function resolveDependencyConfusionStatus({
       // this means that the package was first introduced to source code
       // and now there's also a package of this name in a public registry
       status = '❌ suspicious'
+    } else {
+      if (isPrivatePackage) {
+        status = '❌ suspicious'
+      }
     }
   } else {
     status = '⚠️ vulnerable'
