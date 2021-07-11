@@ -48,7 +48,7 @@ async function testProject({ projectPath, log, debugMode, privatePackagesList = 
       timestampOfPackageInRegistry = new Date(packageMetadataFromRegistry.time.created).getTime()
     }
 
-    let isPrivatePackage = privatePackagesList.includes(dependency)
+    const isPrivatePackage = privatePackagesList.includes(dependency)
 
     // @TODO add debug for:
     // console.log('package in source UTC:   ', timestampInSource)
