@@ -9,7 +9,8 @@ jest.setTimeout(30000)
 const projectFixtures = [
   'simple-project.zip',
   'small-project.zip',
-  'commit-with-broken-package-json.zip'
+  'commit-with-broken-package-json.zip',
+  'small-project-existing-package-name.zip'
 ]
 
 const destinationFixtures = path.resolve(path.join(__dirname, '__fixtures__', 'tmp'))
