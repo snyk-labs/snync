@@ -51,5 +51,10 @@ async function main() {
     process.exit(-1)
   }
 
-  await testProject({ projectPath, log: console.log, debug: cli.flags.debug })
+  await testProject({
+    projectPath,
+    log: console.log,
+    debug: cli.flags.debug,
+    privatePackagesList: cli.flags.private
+  })
 }
