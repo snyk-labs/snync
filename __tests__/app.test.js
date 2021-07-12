@@ -1,10 +1,11 @@
-const fs = require('fs')
-const path = require('path')
-const { testProject } = require('../src')
-
-const decompress = require('decompress')
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import { testProject } from '../src/main.js'
+import decompress from 'decompress'
 
 jest.setTimeout(30000)
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const projectFixtures = [
   'simple-project.zip',
@@ -85,7 +86,7 @@ test('Commit with broken manifest should be ignored', async () => {
 
 test('Test case of private package that exists already on npm', async () => {
   const projectPath = path.resolve(
-    path.join(destinationFixtures, 'simple-project-existing-package-name')
+    path.join(destinationFixtures, 'small-project-existing-package-name')
   )
 
   let out = ''

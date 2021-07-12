@@ -1,6 +1,6 @@
 'use strict'
 
-const childProcess = require('child_process')
+import childProcess from 'child_process'
 
 class RepoManager {
   constructor({ directoryPath }) {
@@ -43,4 +43,4 @@ class RepoManager {
   }
 }
 
-module.exports = RepoManager
+export default RepoManager

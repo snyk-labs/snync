@@ -1,6 +1,6 @@
 'use strict'
 
-const { request } = require('undici')
+import undici from 'undici'
 
 class RegistryClient {
   // @TODO should we instantiate with some configuration
@@ -8,7 +8,7 @@ class RegistryClient {
   // constructor() {}
 
   async getPackageMetadataFromRegistry({ packageName }) {
-    const { body } = await request(
+    const { body } = await undici.request(
       `https://registry.npmjs.org/${encodeURIComponent(packageName)}`,
       {
         method: 'GET',
@@ -30,4 +30,4 @@ class RegistryClient {
   }
 }
 
-module.exports = RegistryClient
+export default RegistryClient
