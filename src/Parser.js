@@ -1,7 +1,8 @@
 'use strict'
 
-const path = require('path')
-const validatePackageName = require('validate-npm-package-name')
+import path from 'path'
+import fs from 'fs'
+import validatePackageName from 'validate-npm-package-name'
 
 class Parser {
   constructor({ directoryPath, manifestType } = {}) {
@@ -40,7 +41,9 @@ class Parser {
     let projectManifest
 
     if (this.manifestType === 'npm') {
-      projectManifest = require(path.resolve(path.join(this.directoryPath, 'package.json')))
+      projectManifest = JSON.parse(
+        fs.readFileSync(path.resolve(path.join(this.directoryPath, 'package.json')))
+      )
     }
 
     return this.getDependencies({ manifest: projectManifest })
@@ -85,4 +88,4 @@ class Parser {
   }
 }
 
-module.exports = Parser
+export default Parser

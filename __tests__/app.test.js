@@ -1,16 +1,18 @@
-const fs = require('fs')
-const path = require('path')
-const { testProject } = require('../src')
-
-const decompress = require('decompress')
+import fs from 'fs'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import { testProject } from '../src/main.js'
+import decompress from 'decompress'
+import { jest } from '@jest/globals'
 
 jest.setTimeout(30000)
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 const projectFixtures = [
   'simple-project.zip',
   'small-project.zip',
   'commit-with-broken-package-json.zip',
-  'small-project-existing-package-name.zip'
+  'simple-project-existing-package-name.zip'
 ]
 
 const destinationFixtures = path.resolve(path.join(__dirname, '__fixtures__', 'tmp'))

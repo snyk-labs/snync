@@ -1,8 +1,8 @@
 'use strict'
 
-const RepoManager = require('../src/RepoManager')
-const Parser = require('../src/Parser')
-const RegistryClient = require('../src/RegistryClient')
+import RepoManager from './RepoManager.js'
+import Parser from './Parser.js'
+import RegistryClient from './RegistryClient.js'
 
 async function testProject({ projectPath, log, debugMode, privatePackagesList = [] }) {
   const registryClient = new RegistryClient()
@@ -97,4 +97,4 @@ function resolveDependencyConfusionStatus({
   return status
 }
 
-module.exports = { testProject }
+export { testProject }

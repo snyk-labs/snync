@@ -2,9 +2,9 @@
   "name": "snync",
   "version": "0.0.0-development",
   "description": "Mitigate security concerns of Dependency Confusion supply chain security risks",
-  "main": "index.js",
+  "type": "module",
   "engines": {
-    "node": ">=10.0.0"
+    "node": ">=12"
   },
   "bin": {
     "snync": "./bin/snync.js"
@@ -12,8 +12,8 @@
   "scripts": {
     "lint": "eslint . && npm run lint:lockfile",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --config .prettierrc.js --write '**/*.js'",
-    "test": "jest",
+    "format": "prettier --config .prettierrc.json --write '**/*.js'",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest",
     "test:watch": "jest --watch",
     "coverage:view": "open-cli coverage/lcov-report/index.html",
     "lint:lockfile": "lockfile-lint --path package-lock.json --validate-https --allowed-hosts npm yarn"
@@ -41,10 +41,13 @@
   },
   "dependencies": {
     "debug": "^4.3.1",
+    "meow": "^10.0.1",
     "undici": "^3.3.6",
     "validate-npm-package-name": "^3.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.14.6",
+    "@babel/preset-env": "^7.14.7",
     "@commitlint/cli": "^9.1.2",
     "@commitlint/config-conventional": "^7.1.2",
     "@semantic-release/changelog": "^3.0.4",
@@ -54,9 +57,9 @@
     "@semantic-release/npm": "^7.1.0",
     "@semantic-release/release-notes-generator": "^7.2.1",
     "babel-eslint": "^10.0.1",
+    "babel-jest": "^27.0.6",
     "babel-plugin-syntax-async-functions": "^6.13.0",
     "babel-plugin-transform-regenerator": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
     "decompress": "^4.2.1",
     "eslint": "^6.0.1",
     "eslint-config-standard": "^13.0.1",
@@ -67,9 +70,10 @@
     "eslint-plugin-security": "^1.4.0",
     "eslint-plugin-standard": "^4.0.0",
     "husky": "^3.0.0",
-    "jest": "^24.8.0",
+    "jest": "^27.0.6",
     "lint-staged": "^9.2.0",
     "lockfile-lint": "^2.0.1",
+    "node-notifier": "^10.0.0",
     "open-cli": "^6.0.0",
     "prettier": "^1.18.2"
   },
@@ -146,6 +150,7 @@
       "plugin:node/recommended"
     ],
     "rules": {
+      "node/no-extraneous-import": "warn",
       "no-process-exit": "warn",
       "jest/no-disabled-tests": "error",
       "jest/no-focused-tests": "error",
