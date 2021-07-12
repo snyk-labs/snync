@@ -150,6 +150,7 @@
       "plugin:node/recommended"
     ],
     "rules": {
+      "node/no-extraneous-import": "warn",
       "no-process-exit": "warn",
       "jest/no-disabled-tests": "error",
       "jest/no-focused-tests": "error",
