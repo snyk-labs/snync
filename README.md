@@ -50,6 +50,22 @@ We've seen cases of package hijacking and maintainer accounts compromises in pas
 
 When a pakcage is detected as **suspicious**, it is our recommendation to immediately move to a new package naming and reserve that new name on the public registry.
 
+## Logic flow
+
+How does snync work from decision tree perspective?
+
+```
+1. Get "all dependencies" in `package.json` (note, refers to direct dependencies only, not transitive)
+   ['dependencies'] and ['devDependencies]
+2. If a package includes a scope (such as prefixed with a `@snyk/`)
+    then remove it from the "all dependencies" list and save it for later, to warn the user to ensure they own that scope
+3. Foreach of the "all dependencies" gathered, get the time it was introduced to the source-code (i.e. the time it was added to `package.json`)
+4. Foreach of the "all dependencies" gathered, get the time it was created in the npmjs registry
+5. Compare the two timestamps
+  5.1. if a package is not found in the registry then signal an error to let them know that this public namespace is not taken, and is vulnerable for someone to employ a Dependency Confusion on them.
+  5.2. if a package is found in the registry, and it was created after the time it was introduced to source-code, then signal a warning that there is potentially an attack in progress and to warn the user to review the premise and legitimacy of that package that exits in the public registry.
+```
+
 ## Supported ecosystems
 
 | Ecosystem     | Supported 
