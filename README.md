@@ -75,15 +75,15 @@ How does snync work from decision tree perspective?
 
 # Install
 
-```sh
-npm install -g snync
-```
-
 ## Prerequisite
 
 To use this tool, it is expected that you have the following available in your environment:
 1. Node.js and npm in stable and recent versions
 2. The Git binary available in your path
+
+```sh
+npm install -g snync
+```
 
 # Usage
 
@@ -100,3 +100,8 @@ To get a list of dependencies we parse a project's manifest (`package.json`) fro
 Then we fetch from the public NPM registry to check when each dependency was created. At this point we can check if dependency is **vulnerable** – if it is not in the public NPM registry.
 
 To check if dependency is **suspicious** we compare date it was first introduced to a project's manifest and date it was published. To understand when you added a dependency to a manifest we scan git commits history. 
+
+# FAQ
+
+Q. Why is it called _snync_?
+A. _snync_ is abbreviation for _So Now You're Not Confused_, which is a play on Snyk's _So Now You Know_.
