@@ -90,7 +90,7 @@ npm install -g snync
 To scan a project's dependencies and test if you're vulnerable to Dependency Confusion security issues, where the project's git repository is cloned at `/home/user/my-app`:
 
 ```sh
-npx snync /home/user/my-app
+npx snync --directory /home/user/my-app
 ```
 
 # Implementation details
