@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "debug": "^4.3.1",
-    "meow": "^10.0.1",
+    "meow": "^10.1.5",
     "undici": "^5.10.0",
     "validate-npm-package-name": "^3.0.0"
   },
